@@ -266,7 +266,7 @@ func main() {
 	// Middleware
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
-	e.Use(banBot)
+	//e.Use(banBot)
 
 	// Initialize
 	e.POST("/initialize", initialize)
