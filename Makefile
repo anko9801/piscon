@@ -17,6 +17,8 @@ SLOW_LOG=/var/log/mysql/mysql-slow.log
 SLACKCAT_CNL=isucon
 
 LOGS_DIR=/etc/logs
+
+DISCORD_WEBHOOK_URL=https://discordapp.com/api/webhooks/867508473755729960/vx_KpRImt_AzO_Zp8YQwB2zjqmIhebRFdOrUM4JIdK42MJH11PUfu6xFzo7XoB_aUn_a
 #################################################################################
 PPROF=go tool pprof
 MYSQL=sudo mysql -h$(DB_HOST) -P$(DB_PORT) -u$(DB_USER) -p$(DB_PASS) $(DB_NAME)
@@ -60,11 +62,16 @@ app-log:
 	sudo journalctl -u isuumo.go.service
 
 .PHONY: analyze
-analyze: alp
+analyze: alp slow
+
+.PHONY: pprof
+pprof:
+	$(PPROF) -png -output pprof.png http://localhost:6060/debug/pprof/profile?seconds=60
+	curl -X POST -F img=@pprof.png $(DISCORD_WEBHOOK_URL)
 
 .PHONY: slow
 slow:
-	sudo cat $(SLOW_LOG) | pt-query-digest | $(SLACKCAT) --tee
+	sudo cat $(SLOW_LOG) | pt-query-digest --explain --group-by fingerprint --order-by Query_time:sum | $(SLACKCAT) --tee
 
 .PHONY: slow-on
 slow-on:
