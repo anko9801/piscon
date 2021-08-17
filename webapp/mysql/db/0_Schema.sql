@@ -19,7 +19,8 @@ CREATE TABLE isuumo.estate
     features    VARCHAR(64)         NOT NULL,
     popularity  INTEGER             NOT NULL,
     INDEX all_index (`door_height`, `door_width`, `rent`, `id`),
-    INDEX nazotte_index (`latitude`, `longitude`, `popularity` DESC, `id` ASC)
+    INDEX nazotte_index (`latitude`, `longitude`, `popularity` DESC, `id` ASC),
+    INDEX union_index (`door_width`, `door_height`, `popularity` DESC, `id` ASC),
 );
 
 CREATE TABLE isuumo.chair
