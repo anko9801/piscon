@@ -10,6 +10,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"regexp"
 	"strconv"
 	"strings"
 
@@ -18,6 +19,8 @@ import (
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"github.com/labstack/gommon/log"
+
+	"net/http/pprof"
 )
 
 const Limit = 20
@@ -238,6 +241,20 @@ func init() {
 	json.Unmarshal(jsonText, &estateSearchCondition)
 }
 
+func banBot(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		r0 := regexp.MustCompile(`ISUCONbot(-Mobile)?|Mediapartners-ISUCON|ISUCONCoffee|ISUCONFeedSeeker(Beta)?|crawler \(https:\/\/isucon\.invalid\/(support\/faq\/|help\/jp\/)|isubot|Isupider`)
+		r1 := regexp.MustCompile(`(?i)(bot|crawler|spider)(?:[-_ .\/;@()]|$)`)
+
+		userAgent := c.Request().UserAgent()
+
+		if r0.MatchString(userAgent) || r1.MatchString(userAgent) {
+			return c.NoContent(http.StatusServiceUnavailable)
+		}
+		return next(c)
+	}
+}
+
 func main() {
 	// Echo instance
 	e := echo.New()
@@ -247,6 +264,7 @@ func main() {
 	// Middleware
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
+	e.Use(banBot)
 
 	// Initialize
 	e.POST("/initialize", initialize)
@@ -268,6 +286,13 @@ func main() {
 	e.POST("/api/estate/nazotte", searchEstateNazotte)
 	e.GET("/api/estate/search/condition", getEstateSearchCondition)
 	e.GET("/api/recommended_estate/:id", searchRecommendedEstateWithChair)
+
+	pprofGroup := e.Group("/debug/pprof")
+	pprofGroup.Any("/cmdline", echo.WrapHandler(http.HandlerFunc(pprof.Cmdline)))
+	pprofGroup.Any("/profile", echo.WrapHandler(http.HandlerFunc(pprof.Profile)))
+	pprofGroup.Any("/symbol", echo.WrapHandler(http.HandlerFunc(pprof.Symbol)))
+	pprofGroup.Any("/trace", echo.WrapHandler(http.HandlerFunc(pprof.Trace)))
+	pprofGroup.Any("/*", echo.WrapHandler(http.HandlerFunc(pprof.Index)))
 
 	mySQLConnectionData = NewMySQLConnectionEnv()
 
