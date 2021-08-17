@@ -2,7 +2,7 @@ GIT_ROOT=.
 GIT_EMAIL=syu.takayama@gmail.com
 GIT_NAME=Shu Takayama
 
-NGINX_LOG=/tmp/access.log
+NGINX_LOG=/var/log/nginx/access.log
 
 KATARIBE_CFG=/etc/kataribe.toml
 
@@ -12,7 +12,7 @@ DB_USER=isucon
 DB_PASS=isucon
 DB_NAME=xsuportal
 
-SLOW_LOG=/tmp/slow-query.log
+SLOW_LOG=/var/log/mysql/mysql-slow.log
 
 SLACKCAT_CNL=isucon
 
@@ -27,7 +27,7 @@ WHEN:=$(shell date +%H:%M:%S)
 .PHONY: pull
 pull:
 	cd $(GIT_ROOT) && \
-		git pull
+		git pull origin master
 
 .PHONY: restart
 restart: restart-nginx restart-mysql restart-app
@@ -39,14 +39,20 @@ restart-app:
 
 .PHONY: restart-nginx
 restart-nginx:
-	sudo rm -f /var/log/nginx/access.log
+	sudo rm -f $(NGINX_LOG)
 	sudo nginx -t
 	sudo systemctl reload nginx
 
 .PHONY: restart-mysql
 restart-mysql:
-	sudo rm -f /var/log/mysql/mysql-slow.log
+	sudo rm -f $(SLOW_LOG)
 	sudo systemctl restart mysql
+
+##########################################################################################
+
+.PHONY: mysql
+mysql:
+	
 
 .PHONY: app-log
 app-log:
@@ -55,9 +61,13 @@ app-log:
 .PHONY: analyze
 analyze: alp
 
+.PHONY: slow
+slow:
+	sudo cat $(SLOW_LOG) | pt-query-digest | $(SLACKCAT) --tee
+
 .PHONY: alp
 alp:
-	cat /var/log/nginx/access.log | alp ltsv -m '/api/estate/[0-9]+,/api/chair/[0-9]+,/api/recommended_estate/[0-9]+,/api/estate/req_doc/[0-9]+,/api/chair/buy/[0-9]+' --sort avg -r
+	cat $(NGINX_LOG) | alp ltsv -m '/api/estate/[0-9]+,/api/chair/[0-9]+,/api/recommended_estate/[0-9]+,/api/estate/req_doc/[0-9]+,/api/chair/buy/[0-9]+' --sort avg -r
 
 ################################################################################################
 
