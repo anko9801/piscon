@@ -41,6 +41,7 @@ restart-app:
 restart-nginx:
 	sudo rm -f $(NGINX_LOG)
 	sudo nginx -t
+	sudo nginx -s reload
 	sudo systemctl reload nginx
 
 .PHONY: restart-mysql
