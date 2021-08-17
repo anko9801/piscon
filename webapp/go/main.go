@@ -413,12 +413,6 @@ func postChair(c echo.Context) error {
 			return c.NoContent(http.StatusBadRequest)
 		}
 
-		val, err := strconv.Atoi(os.Getenv("DESCRIPTION_MAX_LENGTH"))
-
-		if err == nil && val <= len(description) {
-			os.Setenv("DESCRIPTION_MAX_LENGTH", strconv.Itoa(len(description)))
-		}
-
 		_, err = tx.Exec("INSERT INTO chair(id, name, description, thumbnail, price, height, width, depth, color, features, kind, popularity, stock) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)", id, name, description, thumbnail, price, height, width, depth, color, features, kind, popularity, stock)
 		if err != nil {
 			c.Logger().Errorf("failed to insert chair: %v", err)
