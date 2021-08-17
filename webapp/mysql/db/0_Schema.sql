@@ -25,7 +25,7 @@ CREATE TABLE isuumo.chair
 (
     id          INTEGER         NOT NULL PRIMARY KEY,
     name        VARCHAR(64)     NOT NULL,
-    description VARCHAR(100)   NOT NULL,
+    description VARCHAR(100)    NOT NULL,
     thumbnail   VARCHAR(128)    NOT NULL,
     price       INTEGER         NOT NULL,
     height      INTEGER         NOT NULL,
