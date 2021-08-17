@@ -248,10 +248,7 @@ func banBot(next echo.HandlerFunc) echo.HandlerFunc {
 
 		userAgent := c.Request().UserAgent()
 
-		log.Printf(userAgent)
-
 		if r0.MatchString(userAgent) || r1.MatchString(userAgent) {
-			log.Printf("bot banned:" + userAgent)
 			return c.NoContent(http.StatusServiceUnavailable)
 		}
 		return next(c)
