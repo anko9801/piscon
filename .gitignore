@@ -9,3 +9,7 @@ bower_components
 /webapp/frontend/
 /bench/
 /initial-data/
+/webapp/mysql/db/1_DummyEstateData.sql
+/webapp/mysql/db/2_DummyChairData.sql
+/webapp/deno
+/webapp/ruby
