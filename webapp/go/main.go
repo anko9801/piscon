@@ -10,6 +10,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"regexp"
 	"strconv"
 	"strings"
 
@@ -238,6 +239,19 @@ func init() {
 	json.Unmarshal(jsonText, &estateSearchCondition)
 }
 
+func banBot(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		r := regexp.MustCompile(`ISUCONbot(-Mobile)?|ISUCONbot-Image\/|Mediapartners-ISUCON|ISUCONCoffee|ISUCONFeedSeeker(Beta)?|crawler \(https:\/\/isucon\.invalid\/(support\/faq\/|help\/jp\/)|isubot|Isupider|Isupider(-image)?\+|(?i)(bot|crawler|spider)(?:[-_ .\/;@()]|$)`)
+
+		userAgent := c.Request().UserAgent()
+
+		if r.MatchString(userAgent) {
+			return c.NoContent(http.StatusServiceUnavailable)
+		}
+		return next(c)
+	}
+}
+
 func main() {
 	// Echo instance
 	e := echo.New()
@@ -247,6 +261,7 @@ func main() {
 	// Middleware
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
+	e.Use(banBot)
 
 	// Initialize
 	e.POST("/initialize", initialize)
