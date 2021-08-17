@@ -35,3 +35,4 @@ app-log:
 
 .PHONY: alp
 alp:
+	cat /var/log/nginx/access.log | alp ltsv
