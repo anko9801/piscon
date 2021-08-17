@@ -10,7 +10,7 @@ DB_HOST=127.0.0.1
 DB_PORT=3306
 DB_USER=isucon
 DB_PASS=isucon
-DB_NAME=xsuportal
+DB_NAME=isuumo
 
 SLOW_LOG=/var/log/mysql/mysql-slow.log
 
@@ -53,7 +53,7 @@ restart-mysql:
 
 .PHONY: mysql
 mysql:
-	
+	$(MYSQL)
 
 .PHONY: app-log
 app-log:
@@ -65,6 +65,14 @@ analyze: alp
 .PHONY: slow
 slow:
 	sudo cat $(SLOW_LOG) | pt-query-digest | $(SLACKCAT) --tee
+
+.PHONY: slow-on
+slow-on:
+	$(MYSQL) -e "set global slow_query_log_file = '$(SLOW_LOG)'; set global long_query_time = 0; set global slow_query_log = ON;"
+
+.PHONY: slow-off
+slow-off:
+	$(MYSQL) -e "set global slow_query_log = OFF;"
 
 .PHONY: alp
 alp:
