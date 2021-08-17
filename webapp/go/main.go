@@ -246,7 +246,9 @@ func banBot(next echo.HandlerFunc) echo.HandlerFunc {
 		r0 := regexp.MustCompile(`ISUCONbot(-Mobile)?|Mediapartners-ISUCON|ISUCONCoffee|ISUCONFeedSeeker(Beta)?|crawler \(https:\/\/isucon\.invalid\/(support\/faq\/|help\/jp\/)|isubot|Isupider`)
 		r1 := regexp.MustCompile(`(?i)(bot|crawler|spider)(?:[-_ .\/;@()]|$)`)
 
-		userAgent := c.Request().UserAgent()
+		r := c.Request()
+
+		userAgent := r.Header.Get("User-Agent")
 
 		if r0.MatchString(userAgent) || r1.MatchString(userAgent) {
 			return c.NoContent(http.StatusServiceUnavailable)
