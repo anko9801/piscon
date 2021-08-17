@@ -21,7 +21,7 @@ CREATE TABLE isuumo.estate
     INDEX all_index (`door_height`, `door_width`, `rent`, `id`),
     INDEX nazotte_index (`latitude`, `longitude`, `popularity` DESC, `id` ASC),
     INDEX union_index (`door_width`, `door_height`, `popularity` DESC, `id` ASC),
-    INDEX order_index (`popularity` DESC, `id` ASC)
+    INDEX rent_index (`rent`, `id`)
 );
 
 CREATE TABLE isuumo.chair
@@ -39,5 +39,6 @@ CREATE TABLE isuumo.chair
     kind        VARCHAR(64)     NOT NULL,
     popularity  INTEGER         NOT NULL,
     stock       INTEGER         NOT NULL,
-    INDEX all_index (`price`, `height`, `width`, `depth`, `kind`, `color`, `features`, `stock`, `popularity` DESC, `id`)
+    INDEX all_index (`price`, `height`, `width`, `depth`, `kind`, `color`, `features`, `stock`, `popularity` DESC, `id`),
+    INDEX stock_price (`stock`, `price`, `id`),
 );
