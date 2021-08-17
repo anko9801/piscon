@@ -241,11 +241,12 @@ func init() {
 
 func banBot(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		r := regexp.MustCompile(`ISUCONbot(-Mobile)?|ISUCONbot-Image\/|Mediapartners-ISUCON|ISUCONCoffee|ISUCONFeedSeeker(Beta)?|crawler \(https:\/\/isucon\.invalid\/(support\/faq\/|help\/jp\/)|isubot|Isupider|Isupider(-image)?\+|(?i)(bot|crawler|spider)(?:[-_ .\/;@()]|$)`)
+		r0 := regexp.MustCompile(`ISUCONbot(-Mobile)?|Mediapartners-ISUCON|ISUCONCoffee|ISUCONFeedSeeker(Beta)?|crawler \(https:\/\/isucon\.invalid\/(support\/faq\/|help\/jp\/)|isubot|Isupider`)
+		r1 := regexp.MustCompile(`(?i)(bot|crawler|spider)(?:[-_ .\/;@()]|$)`)
 
 		userAgent := c.Request().UserAgent()
 
-		if r.MatchString(userAgent) {
+		if r0.MatchString(userAgent) || r1.MatchString(userAgent) {
 			return c.NoContent(http.StatusServiceUnavailable)
 		}
 		return next(c)
