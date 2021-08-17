@@ -23,7 +23,7 @@ CREATE TABLE isuumo.estate
     INDEX union_index (`door_width`, `door_height`, `popularity` DESC, `id` ASC),
     INDEX rent_index (`rent`, `id`),
     INDEX rent_popularity (`rent`, `popularity` DESC, `id`)
-);
+) ENGINE=MyISAM;
 
 CREATE TABLE isuumo.chair
 (
@@ -42,4 +42,4 @@ CREATE TABLE isuumo.chair
     stock       INTEGER         NOT NULL,
     INDEX all_index (`price`, `height`, `width`, `depth`, `kind`, `color`, `features`, `stock`, `popularity` DESC, `id`),
     INDEX stock_price (`stock`, `price`, `id`)
-);
+) ENGINE=InnoDB;
