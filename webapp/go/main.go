@@ -957,8 +957,8 @@ func postEstateRequestDocument(c echo.Context) error {
 		return c.NoContent(http.StatusBadRequest)
 	}
 
-	estate := Estate{}
-	query := `SELECT * FROM estate WHERE id = ?`
+	var estate int
+	query := `SELECT id FROM estate WHERE id = ?`
 	err = db.Get(&estate, query, id)
 	if err != nil {
 		if err == sql.ErrNoRows {
