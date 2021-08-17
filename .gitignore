@@ -6,6 +6,6 @@
 node_modules
 bower_components
 
-webapp/frontend
-bench
-initial-data
+/webapp/frontend/
+/bench/
+/initial-data/
