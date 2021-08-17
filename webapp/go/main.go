@@ -327,8 +327,8 @@ func main() {
 func initialize(c echo.Context) error {
 	sqlDir := filepath.Join("..", "mysql", "db")
 	paths := []string{
-		filepath.Join(sqlDir, "01_Schema.sql"),
-		filepath.Join(sqlDir, "1_DummyEstateData.sql"),
+		filepath.Join(sqlDir, "0_Schema.sql"),
+		filepath.Join(sqlDir, "2_DummyChairData.sql"),
 	}
 
 	for _, p := range paths {
@@ -348,8 +348,8 @@ func initialize(c echo.Context) error {
 	}
 
 	paths = []string{
-		filepath.Join(sqlDir, "0_Schema.sql"),
-		filepath.Join(sqlDir, "2_DummyChairData.sql"),
+		filepath.Join(sqlDir, "01_Schema.sql"),
+		filepath.Join(sqlDir, "1_DummyEstateData.sql"),
 	}
 
 	for _, p := range paths {
