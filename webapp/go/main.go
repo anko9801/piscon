@@ -296,6 +296,10 @@ func main() {
 	pprofGroup.Any("/trace", echo.WrapHandler(http.HandlerFunc(pprof.Trace)))
 	pprofGroup.Any("/*", echo.WrapHandler(http.HandlerFunc(pprof.Index)))
 
+	go func() {
+		http.ListenAndServe("localhost:6060", nil)
+	}()
+
 	mySQLConnectionData = NewMySQLConnectionEnv()
 
 	var err error
