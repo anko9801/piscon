@@ -10,6 +10,8 @@ CREATE TABLE isuumo.estate
     description VARCHAR(100)        NOT NULL,
     thumbnail   VARCHAR(100)        NOT NULL,
     address     VARCHAR(64)         NOT NULL,
+    latitude    DOUBLE              NOT NULL,
+    longitude   DOUBLE              NOT NULL,
     geom        GEOMETRY,
     rent        INTEGER             NOT NULL,
     door_height TINYINT UNSIGNED    NOT NULL,
@@ -22,3 +24,5 @@ CREATE TABLE isuumo.estate
     INDEX rent_popularity (`rent`, `popularity` DESC, `id`),
     SPATIAL INDEX (geom)
 ) ENGINE=MyISAM;
+
+CREATE TRIGGER insert_trigger AFTER INSERT ON estate FOR EACH ROW INSERT INTO estate (geom) VALUES (POINT(latitude, longitude));
