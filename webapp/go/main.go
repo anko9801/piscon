@@ -342,7 +342,7 @@ func initialize(c echo.Context) error {
 			sqlFile,
 		)
 		if err := exec.Command("bash", "-c", cmdStr).Run(); err != nil {
-			c.Logger().Errorf("Initialize script error : %v", err)
+			c.Logger().Errorf("[FAIL] Initialize script error in Server 2 : %v", err)
 			return c.NoContent(http.StatusInternalServerError)
 		}
 	}
@@ -363,7 +363,7 @@ func initialize(c echo.Context) error {
 			sqlFile,
 		)
 		if err := exec.Command("bash", "-c", cmdStr).Run(); err != nil {
-			c.Logger().Errorf("Initialize script error : %v", err)
+			c.Logger().Errorf("[FAIL] Initialize script error in Server 3 : %v", err)
 			return c.NoContent(http.StatusInternalServerError)
 		}
 	}
