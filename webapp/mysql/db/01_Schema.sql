@@ -12,7 +12,7 @@ CREATE TABLE isuumo.estate
     address     VARCHAR(64)         NOT NULL,
     latitude    DOUBLE              NOT NULL,
     longitude   DOUBLE              NOT NULL,
-    geom        GEOMETORY AS (POINT(latitude, longitude)) STORED NOT NULL,
+    geom        POINT AS (POINT(latitude, longitude)) STORED NOT NULL,
     rent        INTEGER             NOT NULL,
     door_height TINYINT UNSIGNED    NOT NULL,
     door_width  TINYINT UNSIGNED    NOT NULL,
