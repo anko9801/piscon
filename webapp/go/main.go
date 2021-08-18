@@ -416,12 +416,14 @@ func postChair(c echo.Context) error {
 		return c.NoContent(http.StatusInternalServerError)
 	}
 
-	tx, err := db.Begin()
-	if err != nil {
-		c.Logger().Errorf("failed to begin tx: %v", err)
-		return c.NoContent(http.StatusInternalServerError)
-	}
-	defer tx.Rollback()
+	/*
+		tx, err := db.Begin()
+		if err != nil {
+			c.Logger().Errorf("failed to begin tx: %v", err)
+			return c.NoContent(http.StatusInternalServerError)
+		}
+		defer tx.Rollback()
+	*/
 
 	var chairs []Chair
 
@@ -475,10 +477,12 @@ func postChair(c echo.Context) error {
 		return c.NoContent(http.StatusInternalServerError)
 	}
 
-	if err := tx.Commit(); err != nil {
-		c.Logger().Errorf("failed to commit tx: %v", err)
-		return c.NoContent(http.StatusInternalServerError)
-	}
+	/*
+		if err := tx.Commit(); err != nil {
+			c.Logger().Errorf("failed to commit tx: %v", err)
+			return c.NoContent(http.StatusInternalServerError)
+		}
+	*/
 
 	return c.NoContent(http.StatusCreated)
 }
