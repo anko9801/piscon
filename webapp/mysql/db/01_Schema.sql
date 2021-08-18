@@ -25,4 +25,6 @@ CREATE TABLE isuumo.estate
     SPATIAL INDEX (geom)
 ) ENGINE=MyISAM;
 
+USE isuumo;
+
 CREATE TRIGGER insert_trigger BEFORE INSERT ON estate FOR EACH ROW UPDATE estate SET geom=POINT(latitude, longitude);
