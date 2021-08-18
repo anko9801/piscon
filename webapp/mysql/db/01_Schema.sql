@@ -27,4 +27,4 @@ CREATE TABLE isuumo.estate
 
 USE isuumo;
 
-CREATE TRIGGER insert_trigger BEFORE INSERT ON estate FOR EACH ROW UPDATE estate SET geom=POINT(latitude, longitude);
+CREATE TRIGGER insert_trigger AFTER INSERT ON estate FOR EACH ROW UPDATE estate SET geom=POINT(latitude, longitude);
