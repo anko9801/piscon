@@ -235,7 +235,7 @@ func (r *RecordMapper) Err() error {
 
 func NewMySQLConnectionEnv() *MySQLConnectionEnv {
 	return &MySQLConnectionEnv{
-		Host:     [2]string{getEnv("MYSQL_HOST", "127.0.0.1"), getEnv("MYSQL_HOST2", "10.0.0.83")},
+		Host:     [2]string{getEnv("MYSQL_HOST", "10.0.0.82"), getEnv("MYSQL_HOST2", "10.0.0.83")},
 		Port:     getEnv("MYSQL_PORT", "3306"),
 		User:     getEnv("MYSQL_USER", "isucon"),
 		DBName:   getEnv("MYSQL_DBNAME", "isuumo"),
@@ -387,7 +387,7 @@ func initialize(c echo.Context) error {
 			sqlFile,
 		)
 		if err := exec.Command("bash", "-c", cmdStr).Run(); err != nil {
-			c.Logger().Errorf("[FAIL] Initialize script error in Server 2 : %v", err)
+			c.Logger().Errorf("[FAIL] Initialize script error in Server %s : %v", mySQLConnectionData.Host[0], err)
 			return c.NoContent(http.StatusInternalServerError)
 		}
 	}
@@ -408,7 +408,7 @@ func initialize(c echo.Context) error {
 			sqlFile,
 		)
 		if err := exec.Command("bash", "-c", cmdStr).Run(); err != nil {
-			c.Logger().Errorf("[FAIL] Initialize script error in Server 3 : %v", err)
+			c.Logger().Errorf("[FAIL] Initialize script error in Server %s : %v", mySQLConnectionData.Host[1], err)
 			return c.NoContent(http.StatusInternalServerError)
 		}
 	}
