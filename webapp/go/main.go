@@ -102,8 +102,8 @@ type PostEstate struct {
 	Longitude   float64 `db:"longitude" json:"longitude"`
 	Address     string  `db:"address" json:"address"`
 	Rent        int64   `db:"rent" json:"rent"`
-	DoorHeight  int64   `db:"door_height" json:"doorHeight"`
-	DoorWidth   int64   `db:"door_width" json:"doorWidth"`
+	DoorHeight  int64   `db:"door_height" json:"door_height"`
+	DoorWidth   int64   `db:"door_width" json:"door_width"`
 	Features    string  `db:"features" json:"features"`
 	Popularity  int64   `db:"popularity" json:"popularity"`
 }
@@ -888,7 +888,7 @@ func postEstate(c echo.Context) error {
 			}
 		*/
 	}
-	_, err = db.NamedExec("INSERT INTO estate(id, name, description, thumbnail, address, latitude, longitude, rent, door_height, door_width, features, popularity) VALUES(:id, :name, :description, :thumbnail, :address, :latitude, :longitude, :rent, :doorHeight, :doorWidth, :features, :popularity)", estates)
+	_, err = db.NamedExec("INSERT INTO estate(id, name, description, thumbnail, address, latitude, longitude, rent, door_height, door_width, features, popularity) VALUES(:id, :name, :description, :thumbnail, :address, :latitude, :longitude, :rent, :door_height, :door_width, :features, :popularity)", estates)
 	if err != nil {
 		c.Logger().Errorf("failed to insert estate: %v", err)
 		return c.NoContent(http.StatusInternalServerError)
