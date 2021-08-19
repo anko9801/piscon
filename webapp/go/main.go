@@ -983,7 +983,7 @@ func searchRecommendedEstateWithChair(c echo.Context) error {
 		)
 		ORDER BY popularity DESC, id ASC LIMIT ?
 	`
-	err = dbEstate.Select(&estates, query, m1, m2, Limit, m2, m1, Limit, Limit)
+	err = dbEstate.Select(&estates, query, m1, m2, m2, m1, Limit)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return c.JSON(http.StatusOK, EstateListResponse{[]Estate{}})
