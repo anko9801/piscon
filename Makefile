@@ -21,10 +21,14 @@ LOGS_DIR=/etc/logs
 DISCORD_WEBHOOK_URL=https://discordapp.com/api/webhooks/867508473755729960/vx_KpRImt_AzO_Zp8YQwB2zjqmIhebRFdOrUM4JIdK42MJH11PUfu6xFzo7XoB_aUn_a
 #################################################################################
 PPROF=go tool pprof
+KATARIBE=kataribe -f $(KATARIBE_CFG)
 MYSQL=sudo mysql -h$(DB_HOST) -P$(DB_PORT) -u$(DB_USER) -p$(DB_PASS) $(DB_NAME)
 SLACKCAT=slackcat --channel $(SLACKCAT_CNL)
 WHEN:=$(shell date +%H:%M:%S)
 #################################################################################
+
+.PHONY: pullres
+pullres: pull restart
 
 .PHONY: pull
 pull:
@@ -57,8 +61,8 @@ restart-mysql:
 mysql:
 	$(MYSQL)
 
-.PHONY: app-log
-app-log:
+.PHONY: log
+log:
 	sudo journalctl -u isuumo.go.service
 
 .PHONY: analyze
@@ -84,6 +88,10 @@ slow-off:
 .PHONY: alp
 alp:
 	cat $(NGINX_LOG) | alp ltsv -m '/api/estate/[0-9]+,/api/chair/[0-9]+,/api/recommended_estate/[0-9]+,/api/estate/req_doc/[0-9]+,/api/chair/buy/[0-9]+' --sort avg -r
+
+.PHONY: kataribe
+kataribe:
+	cat $(NGINX_LOG) | $(KATARIBE) | $(SLACKCAT) --tee
 
 ################################################################################################
 
