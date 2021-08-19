@@ -18,11 +18,12 @@ CREATE TABLE isuumo.estate
     door_width  TINYINT UNSIGNED    NOT NULL,
     features    VARCHAR(64)         NOT NULL,
     popularity  INTEGER             NOT NULL,
-    INDEX all_index (`door_height`, `door_width`, `rent`),
+    INDEX all_door_index (`door_height`, `door_width`, `rent`),
     INDEX door_width (`door_width`, `rent`),
     INDEX door_height (`door_height`, `rent`),
-    INDEX rent_index (`rent`, `id`),
+    INDEX rent_index (`rent`),
     INDEX rent_popularity (`rent`, `popularity` DESC, `id`),
     INDEX popularity_id (`popularity` DESC, `id`),
+    INDEX latitude_longitude (`latitude`, `longitude`)
     SPATIAL INDEX (geom)
 ) ENGINE=MyISAM;
