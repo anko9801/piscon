@@ -52,6 +52,22 @@ type Chair struct {
 	Stock       int64  `db:"stock" json:"-"`
 }
 
+type PostChair struct {
+	ID          int64  `db:"id" json:"id"`
+	Name        string `db:"name" json:"name"`
+	Description string `db:"description" json:"description"`
+	Thumbnail   string `db:"thumbnail" json:"thumbnail"`
+	Price       int64  `db:"price" json:"price"`
+	Height      int64  `db:"height" json:"height"`
+	Width       int64  `db:"width" json:"width"`
+	Depth       int64  `db:"depth" json:"depth"`
+	Color       string `db:"color" json:"color"`
+	Features    string `db:"features" json:"features"`
+	Kind        string `db:"kind" json:"kind"`
+	Popularity  int64  `db:"popularity" json:"popularity"`
+	Stock       int64  `db:"stock" json:"stock"`
+}
+
 type ChairSearchResponse struct {
 	Count  int64   `json:"count"`
 	Chairs []Chair `json:"chairs"`
@@ -483,7 +499,7 @@ func postChair(c echo.Context) error {
 		defer tx.Rollback()
 	*/
 
-	var chairs []Chair
+	var chairs []PostChair
 
 	for _, row := range records {
 		rm := RecordMapper{Record: row}
@@ -505,7 +521,7 @@ func postChair(c echo.Context) error {
 			return c.NoContent(http.StatusBadRequest)
 		}
 
-		chairs = append(chairs, Chair{
+		chairs = append(chairs, PostChair{
 			ID:          int64(id),
 			Name:        name,
 			Description: description,
