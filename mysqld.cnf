@@ -123,3 +123,5 @@ innodb_flush_method = O_DIRECT
 # ssl-cert=/etc/mysql/server-cert.pem
 # ssl-key=/etc/mysql/server-key.pem
 max_allowed_packet = 32505856
+
+bulk_insert_buffer_size=32MB
