@@ -358,8 +358,10 @@ func main() {
 	go pollDB(dbEstate)
 
 	dbChair.SetMaxOpenConns(1024)
+	dbChair.SetMaxIdleConns(1024)
 	dbChair.SetConnMaxLifetime(0)
 	dbEstate.SetMaxOpenConns(1024)
+	dbEstate.SetMaxIdleConns(1024)
 	dbEstate.SetConnMaxLifetime(0)
 	defer dbChair.Close()
 	defer dbEstate.Close()
