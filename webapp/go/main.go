@@ -959,18 +959,30 @@ func searchRecommendedEstateWithChair(c echo.Context) error {
 	d := chair.Depth
 	var m1, m2 int64
 	if w <= h {
-		m1 = w
 		if h <= d {
+			m1 = w
 			m2 = h
 		} else {
-			m2 = d
+			if w <= d {
+				m1 = w
+				m2 = d
+			} else {
+				m1 = d
+				m2 = w
+			}
 		}
 	} else {
-		m1 = h
 		if w <= d {
+			m1 = h
 			m2 = w
 		} else {
-			m2 = d
+			if h <= d {
+				m1 = h
+				m2 = d
+			} else {
+				m1 = d
+				m2 = h
+			}
 		}
 	}
 	/*
@@ -988,11 +1000,11 @@ func searchRecommendedEstateWithChair(c echo.Context) error {
 	query = `
 			SELECT id, name, description, thumbnail, address, latitude, longitude, rent, door_height, door_width, features, popularity
 			FROM estate
-			WHERE (door_height >= ? AND door_width >= ?) OR (door_height >= ? AND door_width >= ?)
+			WHERE (door_max >= ? AND door_min >= ?)
 			ORDER BY popularity DESC, id ASC LIMIT ?
 		`
 
-	err = dbEstate.Select(&estates, query, m1, m2, m2, m1, Limit)
+	err = dbEstate.Select(&estates, query, m2, m1, Limit)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return c.JSON(http.StatusOK, EstateListResponse{[]Estate{}})
