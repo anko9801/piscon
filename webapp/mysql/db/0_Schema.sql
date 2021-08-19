@@ -20,4 +20,4 @@ CREATE TABLE isuumo.chair
     stock       TINYINT UNSIGNED NOT NULL,
     INDEX all_index (`price`, `height`, `width`, `depth`, `kind`, `color`, `features`, `stock`, `popularity` DESC, `id`),
     INDEX stock_price (`stock`, `price`, `id`)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB COLLATE=utf8mb4_0900_bin;
