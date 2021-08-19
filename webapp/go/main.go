@@ -959,30 +959,18 @@ func searchRecommendedEstateWithChair(c echo.Context) error {
 	d := chair.Depth
 	var m1, m2 int64
 	if w <= h {
+		m1 = w
 		if h <= d {
-			m1 = w
 			m2 = h
 		} else {
-			if w <= d {
-				m1 = w
-				m2 = d
-			} else {
-				m1 = d
-				m2 = w
-			}
+			m2 = d
 		}
 	} else {
+		m1 = h
 		if w <= d {
-			m1 = h
 			m2 = w
 		} else {
-			if h <= d {
-				m1 = h
-				m2 = d
-			} else {
-				m1 = d
-				m2 = h
-			}
+			m2 = d
 		}
 	}
 	/*
