@@ -16,8 +16,6 @@ CREATE TABLE isuumo.estate
     rent        INTEGER             NOT NULL,
     door_height TINYINT UNSIGNED    NOT NULL,
     door_width  TINYINT UNSIGNED    NOT NULL,
-    door_max TINYINT AS (GREATEST(door_height, door_width)) STORED NOT NULL,
-    door_min TINYINT AS (LEAST(door_height, door_width)) STORED NOT NULL,
     features    VARCHAR(64)         NOT NULL,
     popularity  INTEGER             NOT NULL,
     INDEX all_index (`door_height`, `door_width`, `rent`),
@@ -26,6 +24,5 @@ CREATE TABLE isuumo.estate
     INDEX rent_index (`rent`, `id`),
     INDEX rent_popularity (`rent`, `popularity` DESC, `id`),
     INDEX popularity_id (`popularity` DESC, `id`),
-    INDEX door_max_door_min_popularity_id (`door_max`, `door_min`, `popularity` DESC, `id`),
     SPATIAL INDEX (geom)
 ) ENGINE=MyISAM;

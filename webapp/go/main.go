@@ -1000,11 +1000,11 @@ func searchRecommendedEstateWithChair(c echo.Context) error {
 	query = `
 			SELECT id, name, description, thumbnail, address, latitude, longitude, rent, door_height, door_width, features, popularity
 			FROM estate
-			WHERE (door_max >= ? AND door_min >= ?)
+			WHERE (door_height >= ? AND door_width >= ?) OR (door_height >= ? AND door_width >= ?)
 			ORDER BY popularity DESC, id ASC LIMIT ?
 		`
 
-	err = dbEstate.Select(&estates, query, m2, m1, Limit)
+	err = dbEstate.Select(&estates, query, m1, m2, m2, m1, Limit)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return c.JSON(http.StatusOK, EstateListResponse{[]Estate{}})
