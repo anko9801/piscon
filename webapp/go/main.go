@@ -12,6 +12,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
@@ -272,7 +273,36 @@ func init() {
 	json.Unmarshal(jsonText, &estateSearchCondition)
 }
 
+func waitDB(db *sqlx.DB) {
+	for {
+		err := db.Ping()
+		if err == nil {
+			return
+		}
+
+		log.Printf("Failed to ping DB: %s", err)
+		log.Printf("Retrying...")
+		time.Sleep(time.Second)
+	}
+}
+
+func pollDB(db *sqlx.DB) {
+	for {
+		err := db.Ping()
+		if err != nil {
+			log.Printf("Failed to ping DB: %s", err)
+		}
+
+		time.Sleep(time.Second)
+	}
+}
+
 func main() {
+	waitDB(dbChair)
+	go pollDB(dbChair)
+	waitDB(dbEstate)
+	go pollDB(dbEstate)
+
 	// Echo instance
 	e := echo.New()
 	e.Debug = true
