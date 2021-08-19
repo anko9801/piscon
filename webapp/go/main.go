@@ -973,7 +973,16 @@ func searchRecommendedEstateWithChair(c echo.Context) error {
 			m2 = d
 		}
 	}
-	query = `(SELECT id, name, description, thumbnail, address, latitude, longitude, rent, door_height, door_width, features, popularity FROM estate WHERE (door_width >= ? AND door_height >= ?) ORDER BY popularity DESC, id ASC LIMIT ?) UNION (SELECT id, name, description, thumbnail, address, latitude, longitude, rent, door_height, door_width, features, popularity FROM estate WHERE (door_width >= ? AND door_height >= ?) ORDER BY popularity DESC, id ASC LIMIT ?) ORDER BY popularity DESC, id ASC LIMIT ?`
+	query = `
+		SELECT id, name, description, thumbnail, address, latitude, longitude, rent, door_height, door_width, features, popularity
+		FROM estate
+		WHERE (popularity, id) IN (
+			SELECT popularity, id FROM estate WHERE door_height >= ? AND door_width >= ?
+			UNION ALL
+			SELECT popularity, id FROM estate WHERE door_height >= ? AND door_width >= ?
+		)
+		ORDER BY popularity ASC, id ASC LIMIT ?
+	`
 	err = dbEstate.Select(&estates, query, m1, m2, Limit, m2, m1, Limit, Limit)
 	if err != nil {
 		if err == sql.ErrNoRows {
