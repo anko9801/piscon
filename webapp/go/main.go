@@ -2,7 +2,7 @@ package main
 
 import (
 	"database/sql"
-	"encoding/csv"
+	// "encoding/csv"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -13,6 +13,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	csv "bitbucket.org/weberc2/fastcsv"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
