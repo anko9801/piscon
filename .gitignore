@@ -13,3 +13,4 @@ bower_components
 /webapp/mysql/db/2_DummyChairData.sql
 /webapp/deno
 /webapp/ruby
+/webapp/go/go.sum
