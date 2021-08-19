@@ -22,6 +22,6 @@ CREATE TABLE isuumo.estate
     INDEX union_index (`door_width`, `door_height`, `popularity` DESC, `id` ASC),
     INDEX rent_index (`rent`, `id`),
     INDEX rent_popularity (`rent`, `popularity` DESC, `id`),
-    INDEX popularity_id (`popularity`, `id`),
+    INDEX popularity_id (`popularity` DESC, `id`),
     SPATIAL INDEX (geom)
 ) ENGINE=MyISAM;

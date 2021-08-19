@@ -981,7 +981,7 @@ func searchRecommendedEstateWithChair(c echo.Context) error {
 			UNION ALL
 			SELECT popularity, id FROM estate WHERE door_height >= ? AND door_width >= ?
 		)
-		ORDER BY popularity ASC, id ASC LIMIT ?
+		ORDER BY popularity DESC, id ASC LIMIT ?
 	`
 	err = dbEstate.Select(&estates, query, m1, m2, Limit, m2, m1, Limit, Limit)
 	if err != nil {
