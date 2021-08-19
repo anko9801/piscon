@@ -298,11 +298,6 @@ func pollDB(db *sqlx.DB) {
 }
 
 func main() {
-	waitDB(dbChair)
-	go pollDB(dbChair)
-	waitDB(dbEstate)
-	go pollDB(dbEstate)
-
 	// Echo instance
 	e := echo.New()
 	e.Debug = true
@@ -356,6 +351,12 @@ func main() {
 	if err != nil {
 		e.Logger.Fatalf("DB connection failed : %v", err)
 	}
+
+	waitDB(dbChair)
+	go pollDB(dbChair)
+	waitDB(dbEstate)
+	go pollDB(dbEstate)
+
 	dbChair.SetMaxOpenConns(1024)
 	dbChair.SetConnMaxLifetime(0)
 	dbEstate.SetMaxOpenConns(1024)
