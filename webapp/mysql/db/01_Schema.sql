@@ -23,4 +23,4 @@ CREATE TABLE isuumo.estate
     INDEX rent_index (`rent`, `id`),
     INDEX rent_popularity (`rent`, `popularity` DESC, `id`),
     SPATIAL INDEX (geom)
-) ENGINE=MyISAM COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM;
