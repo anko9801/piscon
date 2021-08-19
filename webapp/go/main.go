@@ -2,7 +2,7 @@ package main
 
 import (
 	"database/sql"
-	// "encoding/csv"
+	"encoding/csv"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -13,8 +13,6 @@ import (
 	"strconv"
 	"strings"
 	"time"
-
-	csv "bitbucket.org/weberc2/fastcsv"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
@@ -459,7 +457,7 @@ func postChair(c echo.Context) error {
 		return c.NoContent(http.StatusInternalServerError)
 	}
 	defer f.Close()
-	records, err := csv.NewReader(f).Read()
+	records, err := csv.NewReader(f).ReadAll()
 	if err != nil {
 		c.Logger().Errorf("failed to read csv: %v", err)
 		return c.NoContent(http.StatusInternalServerError)
@@ -765,7 +763,7 @@ func postEstate(c echo.Context) error {
 		return c.NoContent(http.StatusInternalServerError)
 	}
 	defer f.Close()
-	records, err := csv.NewReader(f).Read()
+	records, err := csv.NewReader(f).ReadAll()
 	if err != nil {
 		c.Logger().Errorf("failed to read csv: %v", err)
 		return c.NoContent(http.StatusInternalServerError)
