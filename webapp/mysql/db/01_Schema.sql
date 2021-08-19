@@ -24,6 +24,6 @@ CREATE TABLE isuumo.estate
     INDEX rent_index (`rent`),
     INDEX rent_popularity (`rent`, `popularity` DESC, `id`),
     INDEX popularity_id (`popularity` DESC, `id`),
-    INDEX latitude_longitude (`latitude`, `longitude`)
+    INDEX latitude_longitude (`latitude`, `longitude`),
     SPATIAL INDEX (geom)
 ) ENGINE=MyISAM;
