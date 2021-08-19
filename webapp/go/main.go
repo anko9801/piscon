@@ -459,7 +459,7 @@ func postChair(c echo.Context) error {
 		return c.NoContent(http.StatusInternalServerError)
 	}
 	defer f.Close()
-	records, err := csv.NewReader(f).ReadAll()
+	records, err := csv.NewReader(f).Read()
 	if err != nil {
 		c.Logger().Errorf("failed to read csv: %v", err)
 		return c.NoContent(http.StatusInternalServerError)
@@ -765,7 +765,7 @@ func postEstate(c echo.Context) error {
 		return c.NoContent(http.StatusInternalServerError)
 	}
 	defer f.Close()
-	records, err := csv.NewReader(f).ReadAll()
+	records, err := csv.NewReader(f).Read()
 	if err != nil {
 		c.Logger().Errorf("failed to read csv: %v", err)
 		return c.NoContent(http.StatusInternalServerError)
