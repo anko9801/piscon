@@ -387,7 +387,7 @@ func initialize(c echo.Context) error {
 			sqlFile,
 		)
 		if err := exec.Command("bash", "-c", cmdStr).Run(); err != nil {
-			c.Logger().Errorf("[FAIL] Initialize script error in Server %s : %v", mySQLConnectionData.Host[0], err)
+			c.Logger().Errorf("[FAIL] Initialize script error in Server %s for %s : %v", mySQLConnectionData.Host[0], cmdStr, err)
 			return c.NoContent(http.StatusInternalServerError)
 		}
 	}
@@ -408,7 +408,7 @@ func initialize(c echo.Context) error {
 			sqlFile,
 		)
 		if err := exec.Command("bash", "-c", cmdStr).Run(); err != nil {
-			c.Logger().Errorf("[FAIL] Initialize script error in Server %s : %v", mySQLConnectionData.Host[1], err)
+			c.Logger().Errorf("[FAIL] Initialize script error in Server %s for %s : %v", mySQLConnectionData.Host[1], cmdStr, err)
 			return c.NoContent(http.StatusInternalServerError)
 		}
 	}
