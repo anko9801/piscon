@@ -391,6 +391,9 @@ func main() {
 	defer dbChair.Close()
 	defer dbEstate.Close()
 
+	estateCache = make(map[string][]Estate)
+	estateNumCache = make(map[string]int64)
+
 	// Start server
 	serverPort := fmt.Sprintf(":%v", getEnv("SERVER_PORT", "1323"))
 	e.Logger.Fatal(e.Start(serverPort))
@@ -811,11 +814,14 @@ func postEstate(c echo.Context) error {
 		c.Logger().Errorf("failed to insert estate: %v", err)
 		return c.NoContent(http.StatusInternalServerError)
 	}
+	estateCache = make(map[string][]Estate)
+	estateNumCache = make(map[string]int64)
 
 	return c.NoContent(http.StatusCreated)
 }
 
-// var estateCache map[string][]Estate
+var estateCache map[string][]Estate
+var estateNumCache map[string]int64
 
 func searchEstates(c echo.Context) error {
 	conditions := make([]string, 0)
@@ -896,16 +902,19 @@ func searchEstates(c echo.Context) error {
 		return c.NoContent(http.StatusBadRequest)
 	}
 
-	// if perPage*page <= 100 {
-	// 	return c.JSON(http.StatusOK, estateCache[perPage])
-	// }
-
 	searchQuery := "SELECT id, name, description, thumbnail, address, latitude, longitude, rent, door_height, door_width, features, popularity FROM estate WHERE "
 	countQuery := "SELECT COUNT(*) FROM estate WHERE "
 	searchCondition := strings.Join(conditions, " AND ")
 	limitOffset := " ORDER BY popularity DESC, id ASC LIMIT ? OFFSET ?"
 
 	var res EstateSearchResponse
+
+	if _, ok := estateCache[searchCondition]; ok {
+		res.Count = estateNumCache[searchCondition]
+		res.Estates = estateCache[searchCondition][perPage*page : perPage*(page+1)]
+		return c.JSON(http.StatusOK, res)
+	}
+
 	err = dbEstate.Get(&res.Count, countQuery+searchCondition, params...)
 	if err != nil {
 		c.Logger().Errorf("searchEstates DB execution error : %v", err)
@@ -913,7 +922,7 @@ func searchEstates(c echo.Context) error {
 	}
 
 	estates := []Estate{}
-	params = append(params, perPage, page*perPage)
+	params = append(params, 100, 0)
 	err = dbEstate.Select(&estates, searchQuery+searchCondition+limitOffset, params...)
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -923,7 +932,9 @@ func searchEstates(c echo.Context) error {
 		return c.NoContent(http.StatusInternalServerError)
 	}
 
-	res.Estates = estates
+	estateCache[searchCondition] = estates
+	res.Estates = estates[perPage*page : perPage*(page+1)]
+
 	fmt.Printf("Estate %d %d %d %d\n", res.Count, len(res.Estates), perPage, page)
 
 	return c.JSON(http.StatusOK, res)
