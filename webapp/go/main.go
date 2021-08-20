@@ -471,7 +471,6 @@ func getChairDetail(c echo.Context) error {
 }
 
 func postChair(c echo.Context) error {
-	request("GET", "/purge/api/chair", nil)
 	header, err := c.FormFile("chairs")
 	if err != nil {
 		c.Logger().Errorf("failed to get form file: %v", err)
