@@ -628,6 +628,7 @@ func searchChairs(c echo.Context) error {
 		c.Logger().Errorf("searchChairs DB execution error : %v", err)
 		return c.NoContent(http.StatusInternalServerError)
 	}
+	fmt.Println("Chairs", res.Count)
 
 	chairs := []Chair{}
 	params = append(params, perPage, page*perPage)
@@ -813,6 +814,8 @@ func postEstate(c echo.Context) error {
 	return c.NoContent(http.StatusCreated)
 }
 
+// var estateCache map[string][]Estate
+
 func searchEstates(c echo.Context) error {
 	conditions := make([]string, 0)
 	params := make([]interface{}, 0)
@@ -892,6 +895,10 @@ func searchEstates(c echo.Context) error {
 		return c.NoContent(http.StatusBadRequest)
 	}
 
+	// if perPage*page <= 100 {
+	// 	return c.JSON(http.StatusOK, estateCache[perPage])
+	// }
+
 	searchQuery := "SELECT id, name, description, thumbnail, address, latitude, longitude, rent, door_height, door_width, features, popularity FROM estate WHERE "
 	countQuery := "SELECT COUNT(*) FROM estate WHERE "
 	searchCondition := strings.Join(conditions, " AND ")
@@ -903,6 +910,7 @@ func searchEstates(c echo.Context) error {
 		c.Logger().Errorf("searchEstates DB execution error : %v", err)
 		return c.NoContent(http.StatusInternalServerError)
 	}
+	fmt.Println("Estate", res.Count)
 
 	estates := []Estate{}
 	params = append(params, perPage, page*perPage)
