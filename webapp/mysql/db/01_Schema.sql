@@ -27,3 +27,5 @@ CREATE TABLE isuumo.estate
     INDEX latitude_longitude (`latitude`, `longitude`),
     SPATIAL INDEX (geom)
 ) ENGINE=MyISAM;
+
+ALTER TABLE issumo.estate MODIFY COLUMN geom POINT SRID 0 NOT NULL;
