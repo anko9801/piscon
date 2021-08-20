@@ -666,7 +666,7 @@ func searchChairs(c echo.Context) error {
 	limitOffset := " ORDER BY popularity DESC, id ASC LIMIT ? OFFSET ?"
 
 	cacheFlag := false
-	if perPage*page < 100 {
+	if perPage*page < 125 {
 		cacheFlag = true
 	}
 
@@ -692,7 +692,7 @@ func searchChairs(c echo.Context) error {
 	// データを取ってくる
 	var limit, offset int
 	if cacheFlag {
-		limit = 100
+		limit = 125
 		offset = 0
 	} else {
 		limit = perPage
@@ -962,7 +962,7 @@ func searchEstates(c echo.Context) error {
 	limitOffset := " ORDER BY popularity DESC, id ASC LIMIT ? OFFSET ?"
 
 	cacheFlag := false
-	if page*perPage < 100 {
+	if page*perPage < 125 {
 		cacheFlag = true
 	}
 
@@ -986,7 +986,7 @@ func searchEstates(c echo.Context) error {
 
 	var limit, offset int
 	if cacheFlag {
-		limit = 100
+		limit = 125
 		offset = 0
 	} else {
 		limit = perPage
