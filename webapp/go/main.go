@@ -778,7 +778,7 @@ func getRange(cond RangeCondition, rangeID string) (*Range, error) {
 }
 
 func postEstate(c echo.Context) error {
-	request("GET", "/purge/api/chair", nil)
+	request("GET", "/purge/api/estate", nil)
 	header, err := c.FormFile("estates")
 	if err != nil {
 		c.Logger().Errorf("failed to get form file: %v", err)
