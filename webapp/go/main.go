@@ -933,6 +933,7 @@ func searchEstates(c echo.Context) error {
 	}
 
 	estateCache[searchCondition] = estates
+	estateNumCache[searchCondition] = res.Count
 	res.Estates = estates[perPage*page : perPage*(page+1)]
 
 	fmt.Printf("Estate %d %d %d %d\n", res.Count, len(res.Estates), perPage, page)
