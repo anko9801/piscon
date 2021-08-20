@@ -19,5 +19,6 @@ CREATE TABLE isuumo.chair
     popularity  INTEGER          NOT NULL,
     stock       TINYINT UNSIGNED NOT NULL,
     INDEX all_index (`price`, `height`, `width`, `depth`, `kind`, `color`, `features`, `stock`, `popularity` DESC),
-    INDEX stock_price (`stock`, `price`)
+    INDEX stock_price (`stock`, `price`),
+    INDEX price_index (`price`)
 ) ENGINE=InnoDB;
