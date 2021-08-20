@@ -628,7 +628,6 @@ func searchChairs(c echo.Context) error {
 		c.Logger().Errorf("searchChairs DB execution error : %v", err)
 		return c.NoContent(http.StatusInternalServerError)
 	}
-	fmt.Println("Chairs", res.Count)
 
 	chairs := []Chair{}
 	params = append(params, perPage, page*perPage)
@@ -642,6 +641,7 @@ func searchChairs(c echo.Context) error {
 	}
 
 	res.Chairs = chairs
+	fmt.Println("Chairs", res.Count, len(res.Chairs), perPage)
 
 	return c.JSON(http.StatusOK, res)
 }
@@ -910,7 +910,6 @@ func searchEstates(c echo.Context) error {
 		c.Logger().Errorf("searchEstates DB execution error : %v", err)
 		return c.NoContent(http.StatusInternalServerError)
 	}
-	fmt.Println("Estate", res.Count)
 
 	estates := []Estate{}
 	params = append(params, perPage, page*perPage)
@@ -924,6 +923,7 @@ func searchEstates(c echo.Context) error {
 	}
 
 	res.Estates = estates
+	fmt.Println("Estate", res.Count, len(res.Estates), perPage)
 
 	return c.JSON(http.StatusOK, res)
 }
