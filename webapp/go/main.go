@@ -326,10 +326,10 @@ func main() {
 	// Echo instance
 	e := echo.New()
 	e.Debug = true
-	e.Logger.SetLevel(log.OFF)
+	e.Logger.SetLevel(log.DEBUG)
 
 	// Middleware
-	// e.Use(middleware.Logger())
+	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	//e.Use(banBot)
 
