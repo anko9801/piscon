@@ -709,10 +709,10 @@ func searchChairs(c echo.Context) error {
 		if lastIndex > len(chairs) {
 			lastIndex = len(chairs)
 		}
-		res.Chairs = chairs[perPage*page : lastIndex]
 		chairCache[searchCondition] = chairs
 		chairNumCache[searchCondition] = res.Count
 	}
+	res.Chairs = chairs[perPage*page : lastIndex]
 	fmt.Printf("Chairs %d %d %d %d\n", res.Count, len(res.Chairs), perPage, page)
 
 	return c.JSON(http.StatusOK, res)
