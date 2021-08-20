@@ -1,6 +1,6 @@
 GIT_ROOT=.
-GIT_EMAIL=syu.takayama@gmail.com
-GIT_NAME=Shu Takayama
+GIT_EMAIL=55534323+yukikurage@users.noreply.github.com@gmail.com
+GIT_NAME=yukikurage
 
 NGINX_LOG=/var/log/nginx/access.log
 
@@ -19,6 +19,9 @@ SLACKCAT_CNL=isucon
 LOGS_DIR=/etc/logs
 
 DISCORD_WEBHOOK_URL=https://discordapp.com/api/webhooks/867508473755729960/vx_KpRImt_AzO_Zp8YQwB2zjqmIhebRFdOrUM4JIdK42MJH11PUfu6xFzo7XoB_aUn_a
+
+NGINX_CONFIG=/usr/local/nginx/conf/nginx.conf
+MYSQLD_CONFIG=/etc/mysql/mysql.conf.d/mysqld.cnf
 #################################################################################
 PPROF=go tool pprof
 KATARIBE=kataribe -f $(KATARIBE_CFG)
@@ -36,7 +39,7 @@ pull:
 		git pull origin master
 
 .PHONY: restart
-restart: restart-nginx restart-mysql restart-app
+restart: copy-config restart-nginx restart-mysql restart-app
 
 .PHONY: restart-app
 restart-app:
@@ -57,13 +60,26 @@ restart-mysql:
 
 ##########################################################################################
 
+.PHONY: copy-config
+copy-config: copy-config-nginx copy-config-mysqld
+
+.PHONY: copy-config-nginx
+copy-config-nginx:
+	sudo cp nginx.conf $(NGINX_CONFIG)
+
+.PHONY: copy-config-mysqld
+copy-config-mysqld:
+	sudo cp mysqld.cnf $(MYSQLD_CONFIG)
+
+##########################################################################################
+
 .PHONY: mysql
 mysql:
 	$(MYSQL)
 
 .PHONY: log
 log:
-	sudo journalctl -u isuumo.go.service -r -n 50000
+	sudo journalctl -u isuumo.go.service
 
 .PHONY: analyze
 analyze: alp slow
