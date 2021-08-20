@@ -11,6 +11,7 @@ bower_components
 /initial-data/
 /webapp/mysql/db/1_DummyEstateData.sql
 /webapp/mysql/db/2_DummyChairData.sql
+/webapp/mysql/db/init.sh
 /webapp/deno
 /webapp/ruby
 /webapp/go/go.sum
