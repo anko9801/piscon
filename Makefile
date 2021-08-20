@@ -73,6 +73,10 @@ copy-config-mysqld:
 
 ##########################################################################################
 
+.PHONY: dstat
+dstat:
+	dstat -a -m
+
 .PHONY: mysql
 mysql:
 	$(MYSQL)
