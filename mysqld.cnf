@@ -95,7 +95,7 @@ max_binlog_size   = 100M
 #
 
 # innoDB全体で一つ生成されるグローバルバッファ(別鯖なら搭載メモリの80%)
-innodb_buffer_pool_size = 1GB
+innodb_buffer_pool_size = 1600MB
 # InnoDBの内部データなどを保持する足りないとエラーログが出るからその時増やす
 #innodb_additional_mem_pool_size = 30MB ←これあるとダメ
 # innoDBの更新ログを保持するメモリ
