@@ -909,10 +909,16 @@ func searchEstates(c echo.Context) error {
 
 	var res EstateSearchResponse
 
-	if _, ok := estateCache[searchCondition]; ok && len(estateCache[searchCondition]) == 100 {
+	if _, ok := estateCache[searchCondition]; ok {
 		fmt.Println(len(estateCache[searchCondition]))
 		res.Count = estateNumCache[searchCondition]
-		res.Estates = estateCache[searchCondition][perPage*page : perPage*(page+1)]
+		var index int
+		if perPage*(page+1) > len(estateCache[searchCondition]) {
+			index = len(estateCache[searchCondition])
+		} else {
+			index = perPage * (page + 1)
+		}
+		res.Estates = estateCache[searchCondition][perPage*page : index]
 		fmt.Println(res.Count, res.Estates)
 		return c.JSON(http.StatusOK, res)
 	}
@@ -936,7 +942,13 @@ func searchEstates(c echo.Context) error {
 
 	estateCache[searchCondition] = estates
 	estateNumCache[searchCondition] = res.Count
-	res.Estates = estates[perPage*page : perPage*(page+1)]
+	var index int
+	if perPage*(page+1) > len(estateCache[searchCondition]) {
+		index = len(estateCache[searchCondition])
+	} else {
+		index = perPage * (page + 1)
+	}
+	res.Estates = estates[perPage*page : index]
 
 	fmt.Printf("Estate %d %d %d %d\n", res.Count, len(res.Estates), perPage, page)
 
