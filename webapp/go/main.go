@@ -910,7 +910,6 @@ func searchEstates(c echo.Context) error {
 	var res EstateSearchResponse
 
 	if _, ok := estateCache[searchCondition]; ok {
-		fmt.Println(len(estateCache[searchCondition]))
 		res.Count = estateNumCache[searchCondition]
 		var index int
 		if perPage*(page+1) > len(estateCache[searchCondition]) {
@@ -919,7 +918,6 @@ func searchEstates(c echo.Context) error {
 			index = perPage * (page + 1)
 		}
 		res.Estates = estateCache[searchCondition][perPage*page : index]
-		fmt.Println(res.Count, res.Estates)
 		return c.JSON(http.StatusOK, res)
 	}
 
@@ -930,7 +928,7 @@ func searchEstates(c echo.Context) error {
 	}
 
 	estates := []Estate{}
-	params = append(params, 100, 0)
+	params = append(params, 125, 0)
 	err = dbEstate.Select(&estates, searchQuery+searchCondition+limitOffset, params...)
 	if err != nil {
 		if err == sql.ErrNoRows {
