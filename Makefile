@@ -39,7 +39,7 @@ pull:
 		git pull origin master
 
 .PHONY: restart
-restart: copy-config restart-nginx restart-mysql restart-app
+restart: restart-nginx restart-mysql restart-app
 
 .PHONY: restart-app
 restart-app:
@@ -47,14 +47,14 @@ restart-app:
 	sudo systemctl restart isuumo.go.service
 
 .PHONY: restart-nginx
-restart-nginx:
+restart-nginx: copy-config-nginx
 	sudo rm -f $(NGINX_LOG)
 	sudo /usr/local/nginx/sbin/nginx -t
 	sudo /usr/local/nginx/sbin/nginx -s reload
 	sudo systemctl restart nginx-mod
 
 .PHONY: restart-mysql
-restart-mysql:
+restart-mysql: copy-config-mysqld
 	sudo rm -f $(SLOW_LOG)
 	sudo systemctl restart mysql
 
