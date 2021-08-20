@@ -46,9 +46,9 @@ restart-app:
 .PHONY: restart-nginx
 restart-nginx:
 	sudo rm -f $(NGINX_LOG)
-	sudo nginx -t
-	sudo nginx -s reload
-	sudo systemctl reload nginx
+	sudo /usr/local/nginx/sbin/nginx -t
+	sudo /usr/local/nginx/sbin/nginx -s reload
+	sudo systemctl restart nginx-mod
 
 .PHONY: restart-mysql
 restart-mysql:
@@ -63,7 +63,7 @@ mysql:
 
 .PHONY: log
 log:
-	sudo journalctl -u isuumo.go.service
+	sudo journalctl -u isuumo.go.service -r -n 50000
 
 .PHONY: analyze
 analyze: alp slow
