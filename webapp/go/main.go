@@ -660,16 +660,13 @@ func searchChairs(c echo.Context) error {
 	limitOffset := " ORDER BY popularity DESC, id ASC LIMIT ? OFFSET ?"
 
 	var res ChairSearchResponse
-
 	if _, ok := chairCache[searchCondition]; ok {
-		res.Count = chairNumCache[searchCondition]
-		var index int
-		if perPage*(page+1) > len(chairCache[searchCondition]) {
+		index := perPage * (page + 1)
+		if index > len(chairCache[searchCondition]) {
 			index = len(chairCache[searchCondition])
-		} else {
-			index = perPage * (page + 1)
 		}
 		res.Chairs = chairCache[searchCondition][perPage*page : index]
+		res.Count = chairNumCache[searchCondition]
 		return c.JSON(http.StatusOK, res)
 	}
 
@@ -690,21 +687,14 @@ func searchChairs(c echo.Context) error {
 		return c.NoContent(http.StatusInternalServerError)
 	}
 
-	chairCache[searchCondition] = chairs
-	chairNumCache[searchCondition] = res.Count
-	var index int
-	if perPage*(page+1) > len(chairCache[searchCondition]) {
-		index = len(chairCache[searchCondition])
-	} else {
-		index = perPage * (page + 1)
+	index := perPage * (page + 1)
+	if index > len(chairs) {
+		index = len(chairs)
 	}
 	res.Chairs = chairs[perPage*page : index]
-	err = dbChair.Get(&res.Count, countQuery+searchCondition, params...)
-	if err != nil {
-		c.Logger().Errorf("searchChairs DB execution error : %v", err)
-		return c.NoContent(http.StatusInternalServerError)
-	}
 
+	chairCache[searchCondition] = chairs
+	chairNumCache[searchCondition] = res.Count
 	fmt.Printf("Chairs %d %d %d %d\n", res.Count, len(res.Chairs), perPage, page)
 
 	return c.JSON(http.StatusOK, res)
