@@ -909,7 +909,7 @@ func searchEstates(c echo.Context) error {
 
 	var res EstateSearchResponse
 
-	if _, ok := estateCache[searchCondition]; ok {
+	if _, ok := estateCache[searchCondition]; ok && len(estateCache[searchCondition]) == 100 {
 		fmt.Println(len(estateCache[searchCondition]))
 		res.Count = estateNumCache[searchCondition]
 		res.Estates = estateCache[searchCondition][perPage*page : perPage*(page+1)]
