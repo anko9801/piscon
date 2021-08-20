@@ -659,8 +659,14 @@ func searchChairs(c echo.Context) error {
 	searchCondition := strings.Join(conditions, " AND ")
 	limitOffset := " ORDER BY popularity DESC, id ASC LIMIT ? OFFSET ?"
 
+	cacheFlag := false
+	if perPage*page < 125 {
+		cacheFlag = true
+	}
+
 	var res ChairSearchResponse
-	if _, ok := chairCache[searchCondition]; ok {
+	// キャッシュされたものを使う
+	if _, ok := chairCache[searchCondition]; cacheFlag && ok {
 		index := perPage * (page + 1)
 		if index > len(chairCache[searchCondition]) {
 			index = len(chairCache[searchCondition])
@@ -670,14 +676,24 @@ func searchChairs(c echo.Context) error {
 		return c.JSON(http.StatusOK, res)
 	}
 
+	// カウント
 	err = dbChair.Get(&res.Count, countQuery+searchCondition, params...)
 	if err != nil {
 		c.Logger().Errorf("searchChairs DB execution error : %v", err)
 		return c.NoContent(http.StatusInternalServerError)
 	}
 
+	// データを取ってくる
+	var limit, offset int
+	if cacheFlag {
+		limit = 125
+		offset = 0
+	} else {
+		limit = perPage
+		offset = page * perPage
+	}
 	chairs := []Chair{}
-	params = append(params, 125, 0)
+	params = append(params, limit, offset)
 	err = dbChair.Select(&chairs, searchQuery+searchCondition+limitOffset, params...)
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -687,14 +703,16 @@ func searchChairs(c echo.Context) error {
 		return c.NoContent(http.StatusInternalServerError)
 	}
 
-	index := perPage * (page + 1)
-	if index > len(chairs) {
-		index = len(chairs)
+	// レスポンス
+	lastIndex := perPage * (page + 1)
+	if cacheFlag {
+		if lastIndex > len(chairs) {
+			lastIndex = len(chairs)
+		}
+		res.Chairs = chairs[perPage*page : lastIndex]
+		chairCache[searchCondition] = chairs
+		chairNumCache[searchCondition] = res.Count
 	}
-	res.Chairs = chairs[perPage*page : index]
-
-	chairCache[searchCondition] = chairs
-	chairNumCache[searchCondition] = res.Count
 	fmt.Printf("Chairs %d %d %d %d\n", res.Count, len(res.Chairs), perPage, page)
 
 	return c.JSON(http.StatusOK, res)
