@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"os"
 	"os/exec"
@@ -642,7 +641,7 @@ func searchChairs(c echo.Context) error {
 	}
 
 	res.Chairs = chairs
-	log.Println("Chairs", res.Count, len(res.Chairs), perPage)
+	log.Printf("Chairs %d %d %d", res.Count, len(res.Chairs), perPage)
 
 	return c.JSON(http.StatusOK, res)
 }
@@ -924,7 +923,7 @@ func searchEstates(c echo.Context) error {
 	}
 
 	res.Estates = estates
-	log.Println("Estate", res.Count, len(res.Estates), perPage)
+	log.Printf("Estate %d %d %d", res.Count, len(res.Estates), perPage)
 
 	return c.JSON(http.StatusOK, res)
 }
