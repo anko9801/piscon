@@ -955,15 +955,18 @@ func searchEstates(c echo.Context) error {
 	searchCondition := strings.Join(conditions, " AND ")
 	limitOffset := " ORDER BY popularity DESC, id ASC LIMIT ? OFFSET ?"
 
+	cacheFlag := false
+	if page*perPage < 125 {
+		cacheFlag = true
+	}
+
 	var res EstateSearchResponse
 
-	if _, ok := estateCache[searchCondition]; ok {
+	if _, ok := estateCache[searchCondition]; cacheFlag && ok {
 		res.Count = estateNumCache[searchCondition]
-		var index int
-		if perPage*(page+1) > len(estateCache[searchCondition]) {
+		index := perPage * (page + 1)
+		if index > len(estateCache[searchCondition]) {
 			index = len(estateCache[searchCondition])
-		} else {
-			index = perPage * (page + 1)
 		}
 		res.Estates = estateCache[searchCondition][perPage*page : index]
 		return c.JSON(http.StatusOK, res)
@@ -975,8 +978,16 @@ func searchEstates(c echo.Context) error {
 		return c.NoContent(http.StatusInternalServerError)
 	}
 
+	var limit, offset int
+	if cacheFlag {
+		limit = 125
+		offset = 0
+	} else {
+		limit = perPage
+		offset = perPage * page
+	}
 	estates := []Estate{}
-	params = append(params, 125, 0)
+	params = append(params, limit, offset)
 	err = dbEstate.Select(&estates, searchQuery+searchCondition+limitOffset, params...)
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -986,18 +997,18 @@ func searchEstates(c echo.Context) error {
 		return c.NoContent(http.StatusInternalServerError)
 	}
 
-	estateCache[searchCondition] = estates
-	estateNumCache[searchCondition] = res.Count
-	var index int
-	if perPage*(page+1) > len(estateCache[searchCondition]) {
-		index = len(estateCache[searchCondition])
+	lastIndex := perPage * (page + 1)
+	if cacheFlag {
+		if lastIndex > len(estates) {
+			lastIndex = len(estates)
+		}
+		res.Estates = estates[perPage*page : lastIndex]
+		estateCache[searchCondition] = estates
+		estateNumCache[searchCondition] = res.Count
 	} else {
-		index = perPage * (page + 1)
+		res.Estates = estates
 	}
-	res.Estates = estates[perPage*page : index]
-
 	fmt.Printf("Estate %d %d %d %d\n", res.Count, len(res.Estates), perPage, page)
-
 	return c.JSON(http.StatusOK, res)
 }
 
