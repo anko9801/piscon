@@ -666,7 +666,7 @@ func searchChairs(c echo.Context) error {
 	limitOffset := " ORDER BY popularity DESC, id ASC LIMIT ? OFFSET ?"
 
 	cacheFlag := false
-	if perPage*page < 125 {
+	if perPage*page < 100 {
 		cacheFlag = true
 	}
 
@@ -692,7 +692,7 @@ func searchChairs(c echo.Context) error {
 	// データを取ってくる
 	var limit, offset int
 	if cacheFlag {
-		limit = 125
+		limit = 100
 		offset = 0
 	} else {
 		limit = perPage
@@ -721,7 +721,6 @@ func searchChairs(c echo.Context) error {
 	} else {
 		res.Chairs = chairs
 	}
-	fmt.Printf("Chairs %d %d %d %d\n", res.Count, len(res.Chairs), perPage, page)
 
 	return responseJSON(c, http.StatusOK, res)
 }
@@ -963,7 +962,7 @@ func searchEstates(c echo.Context) error {
 	limitOffset := " ORDER BY popularity DESC, id ASC LIMIT ? OFFSET ?"
 
 	cacheFlag := false
-	if page*perPage < 125 {
+	if page*perPage < 100 {
 		cacheFlag = true
 	}
 
@@ -987,7 +986,7 @@ func searchEstates(c echo.Context) error {
 
 	var limit, offset int
 	if cacheFlag {
-		limit = 125
+		limit = 100
 		offset = 0
 	} else {
 		limit = perPage
@@ -1015,7 +1014,7 @@ func searchEstates(c echo.Context) error {
 	} else {
 		res.Estates = estates
 	}
-	fmt.Printf("Estate %d %d %d %d\n", res.Count, len(res.Estates), perPage, page)
+
 	return responseJSON(c, http.StatusOK, res)
 }
 
