@@ -393,6 +393,8 @@ func main() {
 
 	estateCache = make(map[string][]Estate)
 	estateNumCache = make(map[string]int64)
+	chairCache = make(map[string][]Chair)
+	chairNumCache = make(map[string]int64)
 
 	// Start server
 	serverPort := fmt.Sprintf(":%v", getEnv("SERVER_PORT", "1323"))
@@ -534,8 +536,15 @@ func postChair(c echo.Context) error {
 		c.Logger().Errorf("failed to insert chair: %v", err)
 		return c.NoContent(http.StatusInternalServerError)
 	}
+
+	chairCache = make(map[string][]Chair)
+	chairNumCache = make(map[string]int64)
+
 	return c.NoContent(http.StatusCreated)
 }
+
+var chairCache map[string][]Chair
+var chairNumCache map[string]int64
 
 func searchChairs(c echo.Context) error {
 	conditions := make([]string, 0)
@@ -651,6 +660,19 @@ func searchChairs(c echo.Context) error {
 	limitOffset := " ORDER BY popularity DESC, id ASC LIMIT ? OFFSET ?"
 
 	var res ChairSearchResponse
+
+	if _, ok := chairCache[searchCondition]; ok {
+		res.Count = chairNumCache[searchCondition]
+		var index int
+		if perPage*(page+1) > len(chairCache[searchCondition]) {
+			index = len(chairCache[searchCondition])
+		} else {
+			index = perPage * (page + 1)
+		}
+		res.Chairs = chairCache[searchCondition][perPage*page : index]
+		return c.JSON(http.StatusOK, res)
+	}
+
 	err = dbChair.Get(&res.Count, countQuery+searchCondition, params...)
 	if err != nil {
 		c.Logger().Errorf("searchChairs DB execution error : %v", err)
@@ -658,7 +680,7 @@ func searchChairs(c echo.Context) error {
 	}
 
 	chairs := []Chair{}
-	params = append(params, perPage, page*perPage)
+	params = append(params, 125, 0)
 	err = dbChair.Select(&chairs, searchQuery+searchCondition+limitOffset, params...)
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -668,7 +690,21 @@ func searchChairs(c echo.Context) error {
 		return c.NoContent(http.StatusInternalServerError)
 	}
 
-	res.Chairs = chairs
+	chairCache[searchCondition] = chairs
+	chairNumCache[searchCondition] = res.Count
+	var index int
+	if perPage*(page+1) > len(chairCache[searchCondition]) {
+		index = len(chairCache[searchCondition])
+	} else {
+		index = perPage * (page + 1)
+	}
+	res.Chairs = chairs[perPage*page : index]
+	err = dbChair.Get(&res.Count, countQuery+searchCondition, params...)
+	if err != nil {
+		c.Logger().Errorf("searchChairs DB execution error : %v", err)
+		return c.NoContent(http.StatusInternalServerError)
+	}
+
 	fmt.Printf("Chairs %d %d %d %d\n", res.Count, len(res.Chairs), perPage, page)
 
 	return c.JSON(http.StatusOK, res)
@@ -698,6 +734,8 @@ func buyChair(c echo.Context) error {
 		c.Echo().Logger.Errorf("chair stock update failed : %v", err)
 		return c.NoContent(http.StatusInternalServerError)
 	}
+	chairCache = make(map[string][]Chair)
+	chairNumCache = make(map[string]int64)
 
 	return c.NoContent(http.StatusOK)
 }
