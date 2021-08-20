@@ -15,6 +15,8 @@ import (
 	"strings"
 	"time"
 
+	jsonEnc "github.com/goccy/go-json"
+
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
 	"github.com/labstack/echo"
@@ -320,6 +322,12 @@ func request(method, path string, body io.Reader) (*http.Response, error) {
 	}
 	fmt.Println(data)
 	return resp, nil
+}
+
+func responseJSON(c echo.Context, status int, u interface{}) error {
+	c.Response().Header().Set(echo.HeaderContentType, echo.MIMEApplicationJSONCharsetUTF8)
+	c.Response().WriteHeader(status)
+	return jsonEnc.NewEncoder(c.Response()).Encode(u)
 }
 
 func main() {
@@ -767,7 +775,8 @@ func getLowPricedChair(c echo.Context) error {
 		return c.NoContent(http.StatusInternalServerError)
 	}
 
-	return c.JSON(http.StatusOK, ChairListResponse{Chairs: chairs})
+	//return c.JSON(http.StatusOK, ChairListResponse{Chairs: chairs})
+	return responseJSON(c, http.StatusOK, ChairListResponse{Chairs: chairs})
 }
 
 func getEstateDetail(c echo.Context) error {
@@ -1025,7 +1034,8 @@ func getLowPricedEstate(c echo.Context) error {
 		return c.NoContent(http.StatusInternalServerError)
 	}
 
-	return c.JSON(http.StatusOK, EstateListResponse{Estates: estates})
+	//return c.JSON(http.StatusOK, EstateListResponse{Estates: estates})
+	return responseJSON(c, http.StatusOK, EstateListResponse{Estates: estates})
 }
 
 func searchRecommendedEstateWithChair(c echo.Context) error {
