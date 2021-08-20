@@ -5,6 +5,7 @@ import (
 	"encoding/csv"
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -297,6 +298,30 @@ func pollDB(db *sqlx.DB) {
 	}
 }
 
+func request(method, path string, body io.Reader) (*http.Response, error) {
+	client := &http.Client{
+		Timeout: 30 * time.Second,
+	}
+
+	req, err := http.NewRequest(method, path, body)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	data, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Println(data)
+	return resp, nil
+}
+
 func main() {
 	// Echo instance
 	e := echo.New()
@@ -446,6 +471,7 @@ func getChairDetail(c echo.Context) error {
 }
 
 func postChair(c echo.Context) error {
+	request("GET", "/purge/api/chair", nil)
 	header, err := c.FormFile("chairs")
 	if err != nil {
 		c.Logger().Errorf("failed to get form file: %v", err)
@@ -753,6 +779,7 @@ func getRange(cond RangeCondition, rangeID string) (*Range, error) {
 }
 
 func postEstate(c echo.Context) error {
+	request("GET", "/purge/api/chair", nil)
 	header, err := c.FormFile("estates")
 	if err != nil {
 		c.Logger().Errorf("failed to get form file: %v", err)
