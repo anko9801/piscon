@@ -15,8 +15,6 @@ import (
 	"strings"
 	"time"
 
-	jsonEnc "github.com/goccy/go-json"
-
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
 	"github.com/labstack/echo"
@@ -327,7 +325,7 @@ func request(method, path string, body io.Reader) (*http.Response, error) {
 func responseJSON(c echo.Context, status int, u interface{}) error {
 	c.Response().Header().Set(echo.HeaderContentType, echo.MIMEApplicationJSONCharsetUTF8)
 	c.Response().WriteHeader(status)
-	return jsonEnc.NewEncoder(c.Response()).Encode(u)
+	return json.NewEncoder(c.Response()).Encode(u)
 }
 
 func main() {
