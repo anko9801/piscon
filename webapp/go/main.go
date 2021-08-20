@@ -666,7 +666,7 @@ func searchChairs(c echo.Context) error {
 	}
 
 	res.Chairs = chairs
-	log.Printf("Chairs %d %d %d", res.Count, len(res.Chairs), perPage)
+	log.Printf("Chairs %d %d %d\n", res.Count, len(res.Chairs), perPage)
 
 	return c.JSON(http.StatusOK, res)
 }
@@ -924,7 +924,7 @@ func searchEstates(c echo.Context) error {
 	}
 
 	res.Estates = estates
-	log.Printf("Estate %d %d %d", res.Count, len(res.Estates), perPage)
+	log.Printf("Estate %d %d %d\n", res.Count, len(res.Estates), perPage)
 
 	return c.JSON(http.StatusOK, res)
 }
