@@ -3,6 +3,7 @@ module github.com/isucon/isucon10-qualify/isuumo
 go 1.14
 
 require (
+	bitbucket.org/weberc2/fastcsv v0.0.0-20161115013231-a6293b38cbf6
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
 	github.com/go-sql-driver/mysql v1.6.0
